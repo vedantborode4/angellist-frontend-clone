@@ -1,27 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'
 
-const FundDetails = ({ funds, currentIndex, setCurrentIndex }) => {
+const FundDetails = ({ funds, currentIndex, setCurrentIndex, onClose }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
+  const handleClose = () => {
+    setIsVisible(false);
+    setTimeout(() => {
+      onClose();
+    }, 300)
+  };
+
   const handleNext = () => {
     if (currentIndex < funds.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+      setCurrentIndex(currentIndex + 1)
     }
   };
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
+      setCurrentIndex(currentIndex - 1)
     }
   };
 
-  const currentFund = funds[currentIndex];
+  const currentFund = funds[currentIndex]
   const nextFund =funds[currentIndex + 1]
   let minInvestment = currentFund.min_period * currentFund.min_subscription;
 
   return (
-    <div className="fixed inset-y-0 right-0 z-40 flex w-full flex-col border-lg bg-white sm:w-[600px] lg:w-[720px]">
+    <div
+      className={`fixed inset-y-0 right-0 z-40 flex w-full flex-col border-lg bg-white sm:w-[600px] lg:w-[720px] transform transition-transform duration-300 ${
+        isVisible ? 'translate-x-0' : 'translate-x-full'
+      }`}
+    >
       <div className="flex-1 overflow-scroll p-4 sm:px-6 lg:px-8 lg:py-6">
         <div className="flex items-center justify-between">
           <button
+            onClick={handleClose}
             className="inline-flex justify-center items-center bg-gray-200 gap-3 font-medium rounded-md transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed no-underline hover:no-underline hover:opacity-100 leading-normal h-8 w-8 sm:h-10 sm:w-10 p-0 next-button-secondary"
             aria-label="Close menu"
           >
@@ -185,16 +203,4 @@ const FundDetails = ({ funds, currentIndex, setCurrentIndex }) => {
   );
 };
 
-const FundDetailsList = ({ funds }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  return (
-    <FundDetails
-      funds={funds}
-      currentIndex={currentIndex}
-      setCurrentIndex={setCurrentIndex}
-    />
-  );
-};
-
-export default FundDetailsList;
+export default FundDetails
